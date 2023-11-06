@@ -19,22 +19,32 @@ class SeasonalCommand extends Command
     protected string $pattern = '{season}{year}';
     protected string $description = 'Get a seasonal list of anime';
 
-    public function handle()
+    public function handle(): void
     {
-        $fallbackSeason = match (Carbon::now()->month) {
+        $now = Carbon::now();
+        $fallbackSeason = match ($now->month) {
             1, 2, 3 => 'winter',
             4, 5, 6 => 'spring',
             7, 8, 9 => 'summer',
             default => 'fall',
         };
 
-        $year = intval($this->argument('year', Carbon::now()->year));
+        $year = intval($this->argument('year', $now->year));
         $season = $this->argument('season', $fallbackSeason);
 
         $sesonalAnimes = $this->malServce->getSeasonalAnime($season, $year);
+        $animesAcc = "";
+        dump($sesonalAnimes);
+        foreach ($sesonalAnimes['data'] as $i => $anime) {
+            $animeTitle = $anime['node']['title'] ?? '--';
+            $animeMean = $anime['node']['mean'] ?? '--';
+            $animeRank = $anime['node']['rank'] ?? '--';
+            $animesAcc .= "$i. $animeTitle <b>[$animeMean]</b> <u>#$animeRank</u>\n";
+        }
 
         $this->replyWithMessage([
-            'text' => 'Vinicinhos, mama minha pika',
+            'text' => "###### <b>$season/$year</b> ######\n\n<code>n. Anime name [mean] #rank</code>\n\n$animesAcc",
+            "parse_mode" => 'HTML'
         ]);
     }
 }

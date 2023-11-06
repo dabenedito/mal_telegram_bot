@@ -3,6 +3,7 @@
 use App\Commands\StartCommand;
 use App\Commands\SeasonalCommand;
 use App\Commands\AnimeListCommand;
+use App\Commands\AnimeDetailCommand;
 use Telegram\Bot\Commands\HelpCommand;
 
 return [
@@ -133,6 +134,7 @@ return [
         StartCommand::class,
         SeasonalCommand::class,
         AnimeListCommand::class,
+        AnimeDetailCommand::class,
     ],
 
     /*
